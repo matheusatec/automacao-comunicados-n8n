@@ -1,0 +1,380 @@
+{
+  "name": "Automacao de comunicados com IA",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1e402d75-fbc9-46e7-9b0d-66518836b28c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA",
+          "mode": "list",
+          "cachedResultName": "Planilha sem título",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        0
+      ],
+      "id": "42637962-661b-42e3-9193-21e7bebcb14a",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5GNrZXSrlI0sehmi",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Filter').item.json.contato }}",
+        "subject": "={{ $('Filter').item.json.assunto }}",
+        "message": "={{ $json.output[0].content[0].text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        0
+      ],
+      "id": "bdcb8039-7556-460a-8bdc-402039e0d6cb",
+      "name": "Send a message",
+      "webhookId": "1f7f7129-a7d0-4383-ad93-750d6b7c3544",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GOOdlFmIPkCGdYTT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1abf144-82aa-447a-866e-649e1ad0076e",
+              "name": "Nome",
+              "value": "=Matheus",
+              "type": "string"
+            },
+            {
+              "id": "3f8d5a4a-a083-4cad-b2a1-b44859cad1cf",
+              "name": "assunto",
+              "value": "Teste",
+              "type": "string"
+            },
+            {
+              "id": "fac47b5a-b0a2-4d9f-b8ce-8a5b52f50d0d",
+              "name": "Mensagem",
+              "value": "=Olá, {{ $json.nome }}! O assunto é: {{ $json.assunto }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        256,
+        0
+      ],
+      "id": "f146b55a-019b-405f-be6f-9bdefd0103b1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "SEU_ID_DA_PLANILHA",
+          "mode": "list",
+          "cachedResultName": "Planilha sem título",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "enviado",
+            "data_envio": "={{ $now.toFormat('dd/MM/yyyy HH:mm') }}",
+            "row_number": "",
+            "contato": "={{ $('Get row(s) in sheet').item.json.contato }}"
+          },
+          "matchingColumns": [
+            "contato"
+          ],
+          "schema": [
+            {
+              "id": "nome",
+              "displayName": "nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "contato",
+              "displayName": "contato",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "assunto",
+              "displayName": "assunto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "mensagem_base",
+              "displayName": "mensagem_base",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "data_envio",
+              "displayName": "data_envio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1504,
+        0
+      ],
+      "id": "6b56ed5d-a342-4858-8a64-be3c61a2c5ad",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "5GNrZXSrlI0sehmi",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "ece55dc6-d94c-4c5b-b23e-fedd57dec422",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.4,
+      "position": [
+        704,
+        0
+      ],
+      "id": "bbe9d98b-4f4e-4225-8bcb-0f160e51281d",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Reescreva a mensagem abaixo de forma cordial e curta, em português, chamando a pessoa pelo nome. Não altere nem invente informações. Responda apenas com o texto final, sem aspas e sem explicações.\n\nNome: {{ $json.nome }}\nMensagem: {{ $json.mensagem_base }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        928,
+        0
+      ],
+      "id": "3dedb90d-b5e8-4666-be41-a0ac2bea1ae2",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "49219dfe-4a40-4d2f-b1d7-8c4c01644814",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "REMOVIDO"
+  },
+  "nodeGroups": [],
+  "id": "KImvht15qOmqCdTW",
+  "tags": []
+}
